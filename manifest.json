@@ -1,0 +1,10 @@
+{
+	"id": "keel-board",
+	"name": "Keel Board",
+	"version": "0.1.0",
+	"minAppVersion": "1.13.0",
+	"description": "Render a folder of markdown cards as a kanban board; move cards by dragging files between column folders.",
+	"author": "Johannes Merwe",
+	"authorUrl": "https://github.com/JohannesMerwe",
+	"isDesktopOnly": false
+}
