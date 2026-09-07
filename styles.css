@@ -1,8 +1,145 @@
-/*
+/* Keel Board — Obsidian CSS variables only. */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.keel-board {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 0;
+}
 
-If your plugin does not need CSS, delete this file.
+.keel-board-header {
+	display: flex;
+	align-items: baseline;
+	gap: var(--size-4-3);
+	flex-wrap: wrap;
+	padding: var(--size-4-2) var(--size-4-4);
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+}
 
-*/
+.keel-board-title {
+	margin: 0;
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-semibold);
+}
+
+.keel-board-meta {
+	display: flex;
+	gap: var(--size-4-2);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.keel-board-actions {
+	margin-left: auto;
+	display: flex;
+	gap: var(--size-4-2);
+}
+
+.keel-board-badge {
+	padding: 0 var(--size-4-2);
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-hover);
+	color: var(--text-muted);
+}
+
+.keel-board-columns {
+	display: flex;
+	gap: var(--size-4-3);
+	flex: 1;
+	overflow-x: auto;
+	padding: var(--size-4-3) var(--size-4-4);
+	align-items: flex-start;
+}
+
+.keel-board-column {
+	flex: 1 0 240px;
+	max-width: 360px;
+	display: flex;
+	flex-direction: column;
+	background: var(--background-secondary);
+	border: var(--border-width) solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	max-height: 100%;
+}
+
+.keel-board-column.is-drop-target {
+	border-color: var(--interactive-accent);
+	background: var(--background-modifier-hover);
+}
+
+.keel-board-column-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: var(--size-4-2) var(--size-4-3);
+	font-weight: var(--font-semibold);
+	font-size: var(--font-ui-small);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--text-muted);
+}
+
+.keel-board-count {
+	font-weight: var(--font-normal);
+	color: var(--text-faint);
+}
+
+.keel-board-cards {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: 0 var(--size-4-2) var(--size-4-2);
+	overflow-y: auto;
+	min-height: var(--size-4-12);
+}
+
+.keel-board-card {
+	background: var(--background-primary);
+	border: var(--border-width) solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	padding: var(--size-4-2) var(--size-4-3);
+	cursor: pointer;
+	box-shadow: var(--shadow-s);
+}
+
+.keel-board-card:hover {
+	border-color: var(--background-modifier-border-hover);
+}
+
+.keel-board-card[draggable='true'] {
+	cursor: grab;
+}
+
+.keel-board-card.is-dragging {
+	opacity: 0.5;
+}
+
+.keel-board-card-id {
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-accent);
+}
+
+.keel-board-card-title {
+	font-size: var(--font-ui-small);
+	color: var(--text-normal);
+	line-height: var(--line-height-tight);
+}
+
+.keel-board-card-meta {
+	display: flex;
+	gap: var(--size-4-2);
+	flex-wrap: wrap;
+	margin-top: var(--size-2-1);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+}
+
+.keel-board-card-type {
+	color: var(--text-muted);
+}
+
+.keel-board-picker-note {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+}
