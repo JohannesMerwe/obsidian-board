@@ -2,7 +2,7 @@
 
 A kanban over a folder of markdown cards. Drag a card, the file moves.
 
-**Obsidian plugin** · id `keel-board` · status: 0.1.0 in development (KB-1 to KB-4 done 2026-09-07) · MIT
+**Obsidian plugin** · id `keel-board` · status: beta, not yet on the registry · MIT
 
 Cards are markdown files with frontmatter; columns are folders. This plugin renders any such
 directory as a board, lets you drag cards between columns (which moves the file and updates
@@ -75,8 +75,20 @@ Point a throwaway dev vault's `.obsidian/plugins/keel-board/` at this directory 
 GitHub releases whose tag equals the `manifest.json` version; the workflow in
 `.github/workflows/release.yml` builds and attaches the artifacts. Beta installs through BRAT.
 
+## Install
+
+Until the plugin is on the community registry, install it with
+[BRAT](https://github.com/TfTHacker/obsidian42-brat): *Add beta plugin* →
+`JohannesMerwe/obsidian-board`. Requires Obsidian 1.13.0 or later.
+
 ## Agent skills
 
-`agent/` will hold the same instructions in claude-skill and copilot-prompt formats, telling
-an agent what convention this plugin renders and what it must never do. Copy them into your
-agent's skills directory until keel links them for you.
+`agent/` holds the same instructions in two formats, telling an agent how to work a board
+directory — move the card file to change its state, keep `column`, `state` and `updated` in
+step, mint ids from `board.json`'s `next` — and what it must never do: hand-edit the generated
+`BOARD.md`, write to a `jira` board, or leave a `title:` with a colon unquoted:
+
+- `agent/claude/keel-board/SKILL.md` — copy the folder into `.claude/skills/`.
+- `agent/copilot/keel-board.prompt.md` — copy into `.github/prompts/`.
+
+Keel links them for you once its skills linking lands.
