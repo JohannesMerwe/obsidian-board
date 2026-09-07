@@ -2,7 +2,7 @@
 
 A kanban over a folder of markdown cards. Drag a card, the file moves.
 
-**Obsidian plugin** · id `keel-board` · status: 0.1.0 in development (KB-1 to KB-3 done 2026-09-07) · MIT
+**Obsidian plugin** · id `keel-board` · status: 0.1.0 in development (KB-1 to KB-4 done 2026-09-07) · MIT
 
 Cards are markdown files with frontmatter; columns are folders. This plugin renders any such
 directory as a board, lets you drag cards between columns (which moves the file and updates
@@ -47,6 +47,10 @@ This plugin owns the kanban UI and drag-to-move over board directories; it consu
   edit -->`. A `BOARD.md` without that marker is hand-maintained and is left alone; the
   *Regenerate BOARD.md* command replaces it on purpose.
 - A board whose `provider` is `jira` is read-only in the plugin.
+- **Open workspace boards** lists every board under the active file's keel workspace root
+  (or the whole vault without a `keel.json`) with counts per state; click a row to open it.
+- **Bases:** a base over card files can use the *Board* view, which lays the results out by
+  state using each file's directory; dragging there moves the file too.
 
 Settings: show dates on cards, keep `BOARD.md` up to date, default card type.
 

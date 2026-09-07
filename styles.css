@@ -151,3 +151,63 @@
 .keel-board-actions button {
 	font-size: var(--font-ui-small);
 }
+
+.keel-board-workspace {
+	padding: var(--size-4-3) var(--size-4-4);
+	overflow: auto;
+}
+
+.keel-board-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-ui-small);
+}
+
+.keel-board-table th {
+	text-align: left;
+	color: var(--text-muted);
+	font-weight: var(--font-semibold);
+	padding: var(--size-4-1) var(--size-4-2);
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+}
+
+.keel-board-table td {
+	padding: var(--size-4-2);
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+	vertical-align: baseline;
+}
+
+.keel-board-row {
+	cursor: pointer;
+}
+
+.keel-board-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.keel-board-row-title {
+	font-weight: var(--font-semibold);
+	margin-right: var(--size-4-2);
+}
+
+.keel-board-row-dir {
+	color: var(--text-faint);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	margin-right: var(--size-4-2);
+}
+
+.keel-board-num {
+	font-family: var(--font-monospace);
+	text-align: right;
+}
+
+.keel-board-empty {
+	padding: var(--size-4-4);
+	color: var(--text-muted);
+}
+
+.keel-board-bases {
+	height: 100%;
+	overflow: auto;
+}

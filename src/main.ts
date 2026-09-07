@@ -4,6 +4,10 @@ import { DEFAULT_SETTINGS, KeelBoardSettingTab, type KeelBoardSettings } from '.
 import { AddCardModal } from './ui/add-card-modal';
 import { BoardPicker } from './ui/board-picker';
 import { BoardView, VIEW_TYPE_BOARD } from './ui/board-view';
+import { BASES_VIEW_TYPE, KeelBoardBasesView } from './ui/bases-view';
+import { VIEW_TYPE_WORKSPACE, WorkspaceBoardsView } from './ui/workspace-view';
+import { findWorkspace, type Workspace } from './core/workspace';
+import { parentDir } from './core/paths';
 import { BoardStore } from './vault-board';
 
 export default class KeelBoardPlugin extends Plugin {
@@ -15,12 +19,23 @@ export default class KeelBoardPlugin extends Plugin {
 		this.addSettingTab(new KeelBoardSettingTab(this.app, this));
 
 		this.registerView(VIEW_TYPE_BOARD, (leaf: WorkspaceLeaf) => new BoardView(leaf, this));
+		this.registerView(VIEW_TYPE_WORKSPACE, (leaf: WorkspaceLeaf) => new WorkspaceBoardsView(leaf, this));
+		this.registerBasesView(BASES_VIEW_TYPE, {
+			name: 'Board',
+			icon: 'kanban',
+			factory: (controller, containerEl) => new KeelBoardBasesView(controller, containerEl, this.store),
+		});
 
 		this.addRibbonIcon('kanban', 'Open board', () => void this.openBoardCommand());
 		this.addCommand({
 			id: 'open-board',
 			name: 'Open board',
 			callback: () => void this.openBoardCommand(),
+		});
+		this.addCommand({
+			id: 'open-workspace-boards',
+			name: 'Open workspace boards',
+			callback: () => void this.openWorkspaceBoards(),
 		});
 		this.addCommand({
 			id: 'add-card',
@@ -89,6 +104,26 @@ export default class KeelBoardPlugin extends Plugin {
 			return;
 		}
 		new BoardPicker(this.app, boards, (board) => void this.openBoard(board)).open();
+	}
+
+	/** §C1: the keel workspace of the active file, or null in plain mode. */
+	async currentWorkspace(): Promise<Workspace | null> {
+		const active = this.app.workspace.getActiveFile();
+		if (!active) return null;
+		const texts = new Map<string, string>();
+		for (const path of this.store.snapshot().files) {
+			if (path !== 'keel.json' && !path.endsWith('/keel.json')) continue;
+			if (!active.path.startsWith(parentDir(path) === '' ? '' : parentDir(path) + '/')) continue;
+			const file = this.app.vault.getFileByPath(path);
+			if (file) texts.set(path, await this.app.vault.cachedRead(file));
+		}
+		return findWorkspace(active.path, { exists: (p) => texts.has(p), read: (p) => texts.get(p) ?? null });
+	}
+
+	async openWorkspaceBoards(): Promise<void> {
+		const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_WORKSPACE)[0] ?? this.app.workspace.getLeaf('tab');
+		await leaf.setViewState({ type: VIEW_TYPE_WORKSPACE, active: true });
+		await this.app.workspace.revealLeaf(leaf);
 	}
 
 	async openBoard(board: BoardRef): Promise<void> {
