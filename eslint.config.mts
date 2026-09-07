@@ -13,6 +13,7 @@ export default defineConfig(
 		'package.json',
 		'package-lock.json',
 		'tsconfig.json',
+		'vitest.config.mts',
 	]),
 	{
 		languageOptions: {
@@ -29,4 +30,11 @@ export default defineConfig(
 		},
 	},
 	...obsidianmd.configs.recommended,
+	{
+		files: ['src/core/**/*.test.ts', 'src/core/test-helpers.ts'],
+		rules: {
+			'obsidianmd/no-nodejs-modules': 'off',
+			'import/no-nodejs-modules': 'off',
+		},
+	},
 );

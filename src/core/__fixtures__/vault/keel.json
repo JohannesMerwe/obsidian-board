@@ -1,0 +1,13 @@
+{
+  "$schema": "https://keel.dev/schema/workspace-1.json",
+  "id": "wsp_fixture",
+  "name": "fixture",
+  "type": "code",
+  "projects": [
+    { "name": "audiovisual", "repos": [], "board": null },
+    { "name": "board", "repos": [], "board": null },
+    { "name": "keel", "repos": [], "board": null },
+    { "name": "sync", "repos": [], "board": null },
+    { "name": "board-plugin", "repos": [], "board": null }
+  ]
+}

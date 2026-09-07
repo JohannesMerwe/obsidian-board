@@ -1,0 +1,24 @@
+{
+  "id": "board-plugin",
+  "title": "board-plugin",
+  "prefix": "KB",
+  "next": 6,
+  "provider": "pangolin-board",
+  "columns": [
+    {
+      "dir": "backlog",
+      "title": "Backlog",
+      "state": "todo"
+    },
+    {
+      "dir": "wip",
+      "title": "In progress",
+      "state": "in_progress"
+    },
+    {
+      "dir": "done/{year}",
+      "title": "Done",
+      "state": "done"
+    }
+  ]
+}
