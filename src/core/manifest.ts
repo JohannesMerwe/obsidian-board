@@ -18,6 +18,8 @@ export interface BoardManifest {
 	id: string;
 	title: string;
 	prefix: string;
+	/** Other prefixes cards on this board carry, for resolution only. */
+	prefixes: string[];
 	next: number;
 	provider: string;
 	columns: BoardColumn[];
@@ -48,6 +50,7 @@ export function parseManifest(text: string): BoardManifest | null {
 		id: typeof obj.id === 'string' ? obj.id : '',
 		title: typeof obj.title === 'string' ? obj.title : '',
 		prefix,
+		prefixes: Array.isArray(obj.prefixes) ? obj.prefixes.filter((p): p is string => typeof p === 'string') : [],
 		next,
 		provider: typeof obj.provider === 'string' ? obj.provider : 'pangolin-board',
 		columns: columns.length > 0 ? columns : [...DEFAULT_COLUMNS],
@@ -104,5 +107,5 @@ export function defaultManifest(boardDir: string, prefix: string): BoardManifest
 	const segments = boardDir.split('/').filter(Boolean);
 	const leaf = segments[segments.length - 1] ?? '';
 	const title = leaf === 'board' && segments.length > 1 ? (segments[segments.length - 2] ?? leaf) : leaf || 'Board';
-	return { id: title, title, prefix, next: 1, provider: 'pangolin-board', columns: [...DEFAULT_COLUMNS] };
+	return { id: title, title, prefix, prefixes: [], next: 1, provider: 'pangolin-board', columns: [...DEFAULT_COLUMNS] };
 }

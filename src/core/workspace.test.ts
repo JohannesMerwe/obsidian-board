@@ -1,33 +1,37 @@
 import { describe, expect, it } from 'vitest';
-import { detectWorkspace, type WorkspaceManifests } from './workspace';
+import { findWorkspace, type VaultFiles } from './workspace';
 import { readFixture } from './test-helpers';
 
-const manifests: WorkspaceManifests = {
-	'': readFixture('keel.json'),
-	'nested/inner': '{"name":"inner","projects":[{"name":"p"}]}',
+const texts: Record<string, string> = {
+	'keel.json': readFixture('keel.json'),
+	'nested/inner/keel.json': '{"name":"inner","projects":[{"name":"p"}]}',
+};
+const files: VaultFiles = {
+	exists: (path) => path in texts,
+	read: (path) => texts[path] ?? null,
 };
 
-describe('workspace detection (§C1)', () => {
+describe('workspace detection (§C1, copied from obsidian-open-questions)', () => {
 	it('finds the nearest keel.json and the project below it', () => {
-		const ref = detectWorkspace('audiovisual/board/backlog/AV-4-async-transcription-jobs.md', manifests);
+		const ref = findWorkspace('audiovisual/board/backlog/AV-4-async-transcription-jobs.md', files);
 		expect(ref?.root).toBe('');
 		expect(ref?.name).toBe('fixture');
 		expect(ref?.project).toBe('audiovisual');
 	});
 
 	it('treats notes outside a listed project as workspace-level', () => {
-		expect(detectWorkspace('reference/notes.md', manifests)?.project).toBeNull();
-		expect(detectWorkspace('INDEX.md', manifests)?.project).toBeNull();
+		expect(findWorkspace('reference/notes.md', files)?.project).toBeNull();
+		expect(findWorkspace('INDEX.md', files)?.project).toBeNull();
 	});
 
 	it('prefers the nearer manifest', () => {
-		const ref = detectWorkspace('nested/inner/p/card.md', manifests);
+		const ref = findWorkspace('nested/inner/p/card.md', files);
 		expect(ref?.root).toBe('nested/inner');
 		expect(ref?.project).toBe('p');
-		expect(detectWorkspace('nested/inner/p', manifests)?.project).toBeNull();
+		expect(findWorkspace('nested/inner/p', files)?.project).toBeNull();
 	});
 
 	it('is plain mode without any manifest above', () => {
-		expect(detectWorkspace('plain/notes/README.md', { 'elsewhere': '{}' })).toBeNull();
+		expect(findWorkspace('plain/notes/README.md', { exists: () => false, read: () => null })).toBeNull();
 	});
 });

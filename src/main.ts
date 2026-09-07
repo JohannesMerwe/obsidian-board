@@ -1,13 +1,14 @@
 import { Notice, Plugin, TFolder, type WorkspaceLeaf } from 'obsidian';
-import type { BoardRef } from './core/board';
+import type { Board, BoardRef } from './core/board';
 import { DEFAULT_SETTINGS, KeelBoardSettingTab, type KeelBoardSettings } from './settings';
+import { AddCardModal } from './ui/add-card-modal';
 import { BoardPicker } from './ui/board-picker';
 import { BoardView, VIEW_TYPE_BOARD } from './ui/board-view';
 import { BoardStore } from './vault-board';
 
 export default class KeelBoardPlugin extends Plugin {
 	settings: KeelBoardSettings = { ...DEFAULT_SETTINGS };
-	store: BoardStore = new BoardStore(this.app);
+	store: BoardStore = new BoardStore(this.app, { regenerateBoardMd: () => this.settings.regenerateBoardMd });
 
 	async onload(): Promise<void> {
 		this.settings = { ...DEFAULT_SETTINGS, ...((await this.loadData()) as Partial<KeelBoardSettings> | null) };
@@ -20,6 +21,26 @@ export default class KeelBoardPlugin extends Plugin {
 			id: 'open-board',
 			name: 'Open board',
 			callback: () => void this.openBoardCommand(),
+		});
+		this.addCommand({
+			id: 'add-card',
+			name: 'Add card',
+			checkCallback: (checking) => {
+				const ref = this.currentBoard();
+				if (!ref) return false;
+				if (!checking) void this.store.load(ref).then((board) => this.addCard(board));
+				return true;
+			},
+		});
+		this.addCommand({
+			id: 'regenerate-board-md',
+			name: 'Regenerate BOARD.md',
+			checkCallback: (checking) => {
+				const ref = this.currentBoard();
+				if (!ref) return false;
+				if (!checking) void this.regenerateBoardMd(ref, true);
+				return true;
+			},
 		});
 
 		this.registerEvent(
@@ -39,6 +60,15 @@ export default class KeelBoardPlugin extends Plugin {
 
 	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
+	}
+
+	/** The board shown in the active board view, else the active file's board. */
+	private currentBoard(): BoardRef | null {
+		const view = this.app.workspace.getActiveViewOfType(BoardView);
+		const shown = view?.getBoard();
+		if (shown) return shown;
+		const active = this.app.workspace.getActiveFile();
+		return active ? this.store.boardOf(active.path) : null;
 	}
 
 	/** The board of the active file, else a picker over every board in the vault. */
@@ -68,5 +98,32 @@ export default class KeelBoardPlugin extends Plugin {
 		const leaf = existing ?? this.app.workspace.getLeaf('tab');
 		await leaf.setViewState({ type: VIEW_TYPE_BOARD, active: true, state: { boardDir: board.dir } });
 		await this.app.workspace.revealLeaf(leaf);
+	}
+
+	addCard(board: Board): void {
+		if (!board.writable) {
+			new Notice(`This board is read-only (provider: ${board.manifest.provider}).`);
+			return;
+		}
+		new AddCardModal(this.app, board, this.settings.defaultCardType, (request) => {
+			void this.store
+				.addCard(board, request)
+				.then((file) => {
+					new Notice(`Added ${file.basename.split('-').slice(0, 2).join('-')}.`);
+					return this.app.workspace.getLeaf('tab').openFile(file);
+				})
+				.catch((error: unknown) => new Notice(error instanceof Error ? error.message : 'Could not add the card.'));
+		}).open();
+	}
+
+	async regenerateBoardMd(ref: BoardRef, force = false): Promise<void> {
+		try {
+			const outcome = await this.store.regenerateBoardMd(ref, force);
+			if (outcome === 'written') new Notice('BOARD.md regenerated.');
+			else if (outcome === 'kept') new Notice('BOARD.md is hand-maintained; use the "Regenerate BOARD.md" command to replace it.');
+			else new Notice('This board is read-only; BOARD.md was not written.');
+		} catch (error) {
+			new Notice(error instanceof Error ? error.message : 'Could not write BOARD.md.');
+		}
 	}
 }

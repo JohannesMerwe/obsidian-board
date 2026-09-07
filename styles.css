@@ -143,3 +143,11 @@
 	font-size: var(--font-ui-smaller);
 	color: var(--text-muted);
 }
+
+.keel-board-input-wide {
+	width: 100%;
+}
+
+.keel-board-actions button {
+	font-size: var(--font-ui-small);
+}

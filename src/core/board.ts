@@ -6,7 +6,7 @@
 import { parseCardFileName } from './ids';
 import { DEFAULT_COLUMNS, defaultManifest, parseManifest, type BoardManifest } from './manifest';
 import { columnOfPath, parseCard, type Card } from './card';
-import { parentDir, relativeTo } from './workspace';
+import { parentDir, relativeTo } from './paths';
 
 export interface VaultSnapshot {
 	/** Every file path in the vault (vault-relative, `/`-separated). */

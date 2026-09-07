@@ -9,7 +9,7 @@ import type { BoardColumn, CardState } from './manifest';
 import { columnForDir } from './manifest';
 import { idsInText, parseCardFileName, parseId } from './ids';
 import { getList, getString, splitFrontmatter, type FrontmatterEntry } from './frontmatter';
-import { parentDir, relativeTo } from './workspace';
+import { parentDir, relativeTo } from './paths';
 
 export type CardShape = 'frontmatter' | 'header';
 
@@ -22,6 +22,8 @@ export interface Card {
 	/** The column's `dir` from the manifest (e.g. `done/{year}`). */
 	column: string;
 	type: string | null;
+	/** Optional one-line summary shown in BOARD.md instead of the title. */
+	summary: string | null;
 	created: string | null;
 	updated: string | null;
 	links: string[];
@@ -135,6 +137,7 @@ export function parseCard(path: string, text: string, column: BoardColumn): Card
 			...base,
 			title,
 			type: getString(entries, 'type') || null,
+			summary: getString(entries, 'summary') || null,
 			created: getString(entries, 'created') || null,
 			updated: getString(entries, 'updated') || null,
 			links,
@@ -155,6 +158,7 @@ export function parseCard(path: string, text: string, column: BoardColumn): Card
 		...base,
 		title,
 		type: fields.type ? fields.type.toLowerCase() : null,
+		summary: null,
 		created,
 		updated,
 		links,

@@ -1,5 +1,5 @@
 import { debounce, ItemView, Keymap, Notice, type ViewStateResult, type WorkspaceLeaf } from 'obsidian';
-import { cardsByColumn, type Board } from '../core/board';
+import { cardsByColumn, type Board, type BoardRef } from '../core/board';
 import type { Card } from '../core/card';
 import type { BoardColumn } from '../core/manifest';
 import type { BoardStore } from '../vault-board';
@@ -14,6 +14,8 @@ export interface BoardViewState {
 export interface BoardViewHost {
 	store: BoardStore;
 	settings: KeelBoardSettings;
+	addCard(board: Board): void;
+	regenerateBoardMd(board: BoardRef): Promise<void>;
 }
 
 export class BoardView extends ItemView {
@@ -101,9 +103,12 @@ export class BoardView extends ItemView {
 		}
 	}
 
-	/** Header buttons; extended by later cards. */
-	protected renderActions(_el: HTMLElement, _board: Board): void {
-		// Nothing yet.
+	private renderActions(el: HTMLElement, board: Board): void {
+		if (!board.writable) return;
+		const add = el.createEl('button', { text: 'Add card', cls: 'mod-cta' });
+		this.registerDomEvent(add, 'click', () => this.host.addCard(board));
+		const regenerate = el.createEl('button', { text: 'Regenerate BOARD.md' });
+		this.registerDomEvent(regenerate, 'click', () => void this.host.regenerateBoardMd(board));
 	}
 
 	private renderColumn(parent: HTMLElement, board: Board, column: BoardColumn, cards: Card[]): void {
