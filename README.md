@@ -89,7 +89,7 @@ step, mint ids from `board.json`'s `next` — and what it must never do: hand-ed
 `BOARD.md`, write to a `jira` board, or leave a `title:` with a colon unquoted:
 
 - `agent/claude/keel-board/SKILL.md` — on a machine where this repo is a declared checkout,
-  `keel start` links it into `~/.claude/skills/` and `keel stop` unlinks it (keel
-  0.1, KEEL-42). Without keel, copy the folder into `.claude/skills/`.
+  `keel start` links it into `~/.claude/skills/` and `keel stop` unlinks it. Without
+  keel, copy the folder into `.claude/skills/`.
 - `agent/copilot/keel-board.prompt.md` — copy into `.github/prompts/`; keel does not link
   Copilot prompts yet (where they belong on a machine is an open question).
